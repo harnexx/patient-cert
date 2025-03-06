@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patient Certificate Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    h1 {
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Patient Certificate Generator</h1>
+    <form id="certificateForm">
+      <label for="patientName">Patient Name:</label>
+      <input type="text" id="patientName" required>
+
+      <label for="patientAge">Patient Age:</label>
+      <input type="number" id="patientAge" required>
+
+      <label for="patientDate">Date:</label>
+      <input type="date" id="patientDate" required>
+
+      <button type="submit">Generate Certificate</button>
+    </form>
+
+    <div id="pdfDownloadLink" style="display: none;">
+      <a href="" id="downloadLink" target="_blank">Download PDF</a>
+    </div>
+  </div>
+
+  <!-- jsPDF Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    const { jsPDF } = window.jspdf;
+
+    document.getElementById("certificateForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const patientName = document.getElementById("patientName").value;
+      const patientAge = document.getElementById("patientAge").value;
+      const patientDate = document.getElementById("patientDate").value;
+
+      // Create the PDF
+      const doc = new jsPDF();
+
+      doc.setFontSize(16);
+      doc.text("Certificate of Health", 20, 30);
+
+      doc.setFontSize(12);
+      doc.text(`This is to certify that ${patientName}, aged ${patientAge},`, 20, 50);
+      doc.text(`has visited on ${patientDate}.`, 20, 60);
+
+      // Save the generated PDF as a Blob
+      const pdfOutput = doc.output("blob");
+
+      // Create a download link for the generated PDF
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(pdfOutput);
+      link.download = "patient_certificate.pdf";
+
+      // Show the download link
+      const downloadLink = document.getElementById("pdfDownloadLink");
+      downloadLink.style.display = "block";
+      document.getElementById("downloadLink").href = link.href;
+    });
+  </script>
+</body>
+</html>
